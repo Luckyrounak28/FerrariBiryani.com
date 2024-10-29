@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Veg Menu - Ferrari Biryani Restaurant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f3e9;
+            margin: 0;
+        }
+        header {
+            background-color: maroon;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .cart-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            position: relative;
+        }
+        header .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 14px;
+            display: none;
+        }
+        .menu-container {
+            display: grid;
+            gap: 20px;
+            padding: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        .menu-item {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 300px;
+            margin: auto;
+        }
+        .menu-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .order-btn, .cart-btn {
+            background-color: maroon;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .order-btn:hover, .cart-btn:hover {
+            background-color: darkred;
+        }
+        .plate-selection {
+            margin: 10px 0;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        Ferrari Biryani Restaurant - Non-Vegetarian Menu
+        <div class="cart-icon">
+            <a href="cart.html">🛒</a>
+            <span class="cart-count" id="cart-count">0</span>
+        </div>
+    </header>
+
+    <div class="menu-container">
+        <div class="menu-item">
+            <img src="images/chickenbiryani.jpg" alt="Chicken Biryani">
+            <h3>Chicken Biryani</h3>
+            <p>Price: ₹150 (Full Plate)</p>
+            <div class="plate-selection">
+                <label>
+                    <input type="radio" name="Chicken Biryani" value="full" checked> Full Plate - ₹150
+                </label>
+                <label>
+                    <input type="radio" name="Chicken Biryani" value="half"> Half Plate - ₹120
+                </label>
+            </div>
+            <div class="btn-container">
+                <button class="order-btn" onclick="orderNow('Chicken Biryani', 150, 'dummy-veg-image.jpg')">Order Now</button>
+                <button class="cart-btn" onclick="addToCart('Chicken Biryani', 150, 'dummy-veg-image.jpg')">Add to Cart</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <img src="images/muttonbiryani.jpg" alt="Mutton Biryani">
+            <h3>Mutton Biryani</h3>
+            <p>Price: ₹120 (Full Plate)</p>
+            <div class="plate-selection">
+                <label>
+                    <input type="radio" name="Mutton Biryani" value="full" checked> Full Plate - ₹120
+                </label>
+                <label>
+                    <input type="radio" name="Mutton Biryani" value="half"> Half Plate - ₹96
+                </label>
+            </div>
+            <div class="btn-container">
+                <button class="order-btn" onclick="orderNow('Mutton Biryani', 120, 'dummy-veg-image.jpg')">Order Now</button>
+                <button class="cart-btn" onclick="addToCart('Mutton Biryani', 120, 'dummy-veg-image.jpg')">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCartCount() {
+            const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+            const cartCount = document.getElementById("cart-count");
+            cartCount.textContent = cartItems.length;
+            cartCount.style.display = cartItems.length > 0 ? 'inline-block' : 'none';
+        }
+
+        function getSelectedPlate(itemName, fullPrice) {
+            const selectedPlate = document.querySelector(`input[name="${itemName}"]:checked`).value;
+            return selectedPlate === "half" ? Math.floor(fullPrice * 0.8) : fullPrice;
+        }
+
+        function orderNow(itemName, fullPrice, itemImage) {
+            const itemPrice = getSelectedPlate(itemName, fullPrice);
+            alert(`Thank you for ordering ${itemName} (${itemPrice === fullPrice ? "Full Plate" : "Half Plate"})!`);
+        }
+
+        function addToCart(itemName, fullPrice, itemImage) {
+            const itemPrice = getSelectedPlate(itemName, fullPrice);
+            const plateType = itemPrice === fullPrice ? "Full Plate" : "Half Plate";
+
+            let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+            cartItems.push({ name: itemName + " (" + plateType + ")", price: itemPrice, image: itemImage });
+            localStorage.setItem("cart", JSON.stringify(cartItems));
+
+            alert(`${itemName} (${plateType}) has been added to your cart.`);
+            updateCartCount();
+        }
+
+        window.onload = updateCartCount;
+    </script>
+</body>
+</html>

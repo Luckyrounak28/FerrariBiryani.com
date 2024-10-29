@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Ferrari Biryani Restaurant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f3e9;
+            margin: 0;
+        }
+        header {
+            background-color: maroon;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .cart-container {
+            display: grid;
+        gap: 20px;
+        padding: 15px;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        .cart-item {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        .cart-item img {
+            width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        }
+        .cart-item h3 {
+            margin: 10px 0;
+        }
+        .cart-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .checkout-btn {
+            background-color: maroon;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        .checkout-btn:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <header>Your Cart - Ferrari Biryani Restaurant</header>
+    <div class="cart-container" id="cart-container">
+        <!-- Cart items will be inserted here by JavaScript -->
+    </div>
+    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+
+    <script>
+        function loadCartItems() {
+            let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+            let cartContainer = document.getElementById("cart-container");
+            cartContainer.innerHTML = ""; // Clear any existing items
+
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = "<p>Your cart is empty!</p>";
+                return;
+            }
+
+            cartItems.forEach((item, index) => {
+                let itemElement = document.createElement("div");
+                itemElement.classList.add("cart-item");
+                itemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <h3>${item.name}</h3>
+                    <p>Price: ₹${item.price}</p>
+                    <button class="delete-btn" onclick="removeFromCart(${index})">Remove</button>
+                `;
+                cartContainer.appendChild(itemElement);
+            });
+        }
+
+        function removeFromCart(index) {
+            let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+            cartItems.splice(index, 1); // Remove the item at the given index
+            localStorage.setItem("cart", JSON.stringify(cartItems)); // Update local storage
+            loadCartItems(); // Reload cart items
+            updateCartCount(); // Update the cart count in header
+        }
+
+        function checkout() {
+            if (localStorage.getItem("cart")) {
+                alert("Proceeding to checkout...");
+                localStorage.removeItem("cart"); // Clear cart after checkout
+                loadCartItems(); // Reload cart to show it’s empty
+                updateCartCount(); // Update the cart count in header
+            } else {
+                alert("Your cart is empty!");
+            }
+        }
+
+        // Load cart items when the page loads
+        window.onload = function() {
+            loadCartItems();
+            updateCartCount(); // Update the cart count in header
+        };
+
+        function updateCartCount() {
+            let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+            let cartIcon = document.querySelector(".cart-icon");
+            if (cartIcon) {
+                cartIcon.textContent = `🛒 (${cartItems.length})`; // Update cart icon with item count
+            }
+        }
+    </script>
+</body>
+</html>
